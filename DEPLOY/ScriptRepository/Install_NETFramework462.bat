@@ -1,0 +1,2 @@
+robocopy \\serverfs1.sistemaswin.int\Repository$\Packages\NETFramework462 c:\windows\temp NDP462-KB3151800-x86-x64-AllOS-ENU.exe /xo /np /w:1 /r:2
+c:\windows\temp\NDP462-KB3151800-x86-x64-AllOS-ENU.exe /q /norestart /log c:\windows\temp\NDP462-KB3151800-x86-x64-AllOS-ENU.log
