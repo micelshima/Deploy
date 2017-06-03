@@ -68,6 +68,7 @@ Function fill-TreeView($scriptsrepository,$treeview)
 	{
 	"BAT"{$indexicon=1}
 	"PS"{$indexicon=2}
+	"TXT"{$indexicon=1}
 	}
 gci $scriptsrepository|select -expand basename|%{
     try{
@@ -198,6 +199,9 @@ $Form1.Add_Resize({
 	$TreeViewps.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -130))
 	$buttonps.Location = new-object System.Drawing.Point(5,($tabControl1.size.height -60))
 	$buttonps.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),22)
+	$TreeViewtxt.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -130))
+	$buttonplink.Location = new-object System.Drawing.Point(5,($tabControl1.size.height -60))
+	$buttonplink.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),22)
 	$richtextbox.Size = new-object System.Drawing.Size(($Form1.ClientSize.Width -480),($Form1.ClientSize.height -91))
 	$progressBar1.Location = new-object System.Drawing.Point(475,($Form1.ClientSize.height -15))
 	$progressBar1.Size = new-object System.Drawing.Size(($Form1.ClientSize.Width -480),10)
@@ -297,8 +301,11 @@ $tabPage1.BackColor = $css.tabcolor
 $tabPage2 = New-Object System.Windows.Forms.TabPage
 $tabPage2.Text = "PS1 Scripts"
 $tabPage2.BackColor = $css.tabcolor
+$tabPage3 = New-Object System.Windows.Forms.TabPage
+$tabPage3.Text = "TXT with Plink"
+$tabPage3.BackColor = $css.tabcolor
 #Add Tabs to tabcontrol
-$tabControl1.Controls.AddRange(@($tabPage1,$tabPage2))
+$tabControl1.Controls.AddRange(@($tabPage1,$tabPage2,$tabpage3))
 
 ####TAB 1 CONTENT (PSEXEC)
 $checkBoxElevated = New-Object System.Windows.Forms.CheckBox
@@ -365,7 +372,7 @@ $buttonpsexec.Add_Click({
 	if ($objcomputers.length -ne 0 -and (test-path $batfilefullname))
 	{
 		$count=$progressBar1.Value=0
-		If($objcomputers.GetType().Name -match "Object"){$progressBar1.Maximum=$total=$objcomputers2.length}else{$progressBar1.Maximum=$total=1}
+		If($objcomputers.GetType().Name -match "Object"){$progressBar1.Maximum=$total=$objcomputers.length}else{$progressBar1.Maximum=$total=1}
 
 				foreach ($computername in $objcomputers)
 				{
@@ -454,6 +461,73 @@ $buttonps.Add_Click({
 		write-host "END OF DEPLOYMENT" -fore cyan
 	}
 })
+###TAB 3 CONTENT (TXT WITH Plink)
+$TreeViewtxt = New-Object Windows.Forms.TreeView
+$TreeViewtxt.name="TXT"
+$TreeViewtxt.PathSeparator = $treeSeparator
+$TreeViewtxt.Location = New-Object System.Drawing.Point(5,45) 
+$TreeViewtxt.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -130))
+$TreeViewtxt.borderstyle = 0 #0=sin borde, 2=borde 1=hundido
+$TreeViewtxt.BackColor = $css.tabcolor
+$TreeViewtxt.imagelist = $imageList
+$TreeViewtxt.Hideselection=$false
+$tabPage3.Controls.Add($TreeViewtxt)
+fill-treeview "$psscriptroot\ScriptRepository\*.txt" $TreeViewtxt
+$TreeViewtxt.Add_AfterSelect({
+	$script:txtfilebasename=$_.Node.Text
+	$script:txtfilefullname="$psscriptroot\ScriptRepository\$($_.Node.FULLPATH).txt"
+	})
+$buttonplink = New-Object System.Windows.Forms.Button
+$buttonplink.Location = new-object System.Drawing.Point(5,($tabControl1.size.height -60))
+$buttonplink.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),22)
+$buttonplink.Font = $css_buttonery.font
+$buttonplink.text="Deploy with Plink"
+$tabPage3.controls.add($buttonplink)
+$buttonplink.Add_Click({
+	$scope=$combocreds.text
+	if($scope -ne '')
+	{
+	$credsplain=select-MiCredential -scope $scope -plain
+	Append-Richtextbox -Source "Credentials" -Message "Using $($combocreds.text) ($($credsplain.username))" -MessageColor 'Blue' -logfile 'plink.log'
+	}
+	else
+	{
+	$identity=([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).identities.name
+	Append-Richtextbox -Source "Credentials" -Message "Using Current Credentials ($identity)" -MessageColor 'Blue' -logfile 'plink.log'
+	}
+	
+	$objcomputers=$textboxobjects.text.Split("`n`r") -replace "`#.*", "$([char]0)" -replace "#.*" -replace "$([char]0)", "#" -replace "^\s*" -replace "\s*$"|?{$_;}
+	if($RadioButtonping.Checked){$objcomputers=ping-computers $objcomputers}
+	elseif($RadioButtonports.Checked){$objcomputers=test-ports $objcomputers 22}
+
+	if ($objcomputers.length -ne 0 -and (test-path $txtfilefullname))
+	{
+		$count=$progressBar1.Value=0
+		If($objcomputers.GetType().Name -match "Object"){$progressBar1.Maximum=$total=$objcomputers.length}else{$progressBar1.Maximum=$total=1}
+
+				foreach ($computername in $objcomputers)
+				{
+				$percent=[int](($count/$total)*100)
+				Write-Progress -CurrentOperation "$percent% Completed ($count/$total)" -status "Deploying $txtfilebasename to $computername with plink" -activity "DEPLOYING TXT's" -PercentComplete $percent
+				$count++
+				write-host "`n$computername : Deploying $txtfilebasename..." -fore yellow				
+				if ($scope -ne '')
+				{
+				$plinkcommand="$psscriptroot\..\_bin\plink.exe -v {1}@{0} -pw '{2}' -m '{3}' >> 'LOGS\{4}.log'" -f $computername,$credsplain.username,$credsplain.password,$txtfilefullname,$txtfilebasename
+				invoke-expression $plinkcommand				
+				$msg="{0}: exitcode:{1} executing:{2}" -f $computername,$lastexitcode,$txtfilebasename
+				if($lastexitcode -eq 1){$color='red'}else{$color='green'}
+				Append-Richtextbox -ComputerName $computername -Source "Plink" -Message $msg -MessageColor $color -logfile 'plink.log'
+				}
+				else{Append-Richtextbox -ComputerName $computername -Source "Plink" -Message "Please supply proper credentials" -MessageColor 'red' -logfile 'plink.log'}
+				write-host $raya -fore yellow
+				$progressBar1.PerformStep()
+				}
+		Write-Progress -Activity "DEPLOYING TXT'S" -Completed
+		write-host "END OF DEPLOYMENT" -fore yellow
+	}
+})
+
 $richtextbox = New-Object System.Windows.Forms.RichTextBox
 $richtextbox.Location = new-object System.Drawing.Point(475,75)
 $richtextbox.Size = new-object System.Drawing.Size(($Form1.ClientSize.Width -480),($Form1.ClientSize.height -91))
