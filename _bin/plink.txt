@@ -1,0 +1,4 @@
+Download and place Plink.exe in this folder, otherwise the Install portion of this UI will not work.
+Plink available here:
+
+https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
