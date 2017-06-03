@@ -1,0 +1,1 @@
+esxcli storage core path list | grep -e "Device:" -e "State" -e "Runtime Name:"
