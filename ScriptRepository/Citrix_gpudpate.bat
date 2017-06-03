@@ -1,1 +1,0 @@
-gpupdate /target:computer /force
