@@ -86,7 +86,7 @@ gci $scriptsrepository|select -expand basename|%{
 }
 Function ping-computers($objcomputers)
 {
-Append-Richtextbox -Source "Ping" -Message "Testing-connection first" -MessageColor 'Blue'
+Append-Richtextbox -Source "Test-connection" -Message "Testing-connection first" -MessageColor 'Blue'
 $objcomputers2=@()
 $count=0
 	foreach($computername in $objcomputers)
@@ -114,7 +114,7 @@ return $objcomputers2
 }
 Function test-ports($objcomputers,$ports)
 {
-Append-Richtextbox -Source "Test-Ports" -Message "Testing-ports $($ports -join(',')) first" -MessageColor 'Blue'
+Append-Richtextbox -Source "Test-Ports" -Message "Test-ports $($ports -join(',')) first" -MessageColor 'Blue'
 $objcomputers2=@()
 $count=0
 	foreach($computername in $objcomputers)
