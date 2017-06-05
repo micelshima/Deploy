@@ -1,6 +1,7 @@
+$scriptbasename=$MyInvocation.Mycommand.name.substring(0,$MyInvocation.Mycommand.name.lastindexof('.'))
 $HKLM = 2147483650
-$logfile="LOGS\WMI Inventory Hardware.csv"
-if (!(test-path $logfile)){out-file $logfile -input "SERVER	TYPE	DOMAIN	MANUFACTURER	MODEL	SERIALNUMBER	PARTNUMBER	N_PROCESSORS	N_CORES	RAM	STORAGE	OSFAMILY	SP	LASTUPDATED	LASTBOOTUP"}
+$logfile= "results\$($scriptbasename).csv"
+if (!(test-path $logfile)){out-file $logfile -input "Servidor	tipo	dominio	marca	modelo	serialnumber	partnumber	Nprocessors	Ncores	ram	almacenamiento	OSfamily	SP	WUdate	bootup"}
 #WMI computer info
 try{
 	#COMPUTERSYSTEM
@@ -18,7 +19,7 @@ try{
 		}
 		else
 		{
-		$tipo="Physical"
+		$tipo="Físico"
 		#BIOS
 		if($scope -eq ''){$result=gwmi -computername $computername Win32_Bios}
 		else{$result=gwmi -computername $computername Win32_Bios -credential $creds}
@@ -54,7 +55,7 @@ try{
 	$WUdate="{0:yyyy/MM/dd HH:mm:ss}" -f [datetime]$WUdate
 out-file $logfile -input "$computername	$tipo	$dominio	$marca	$modelo	$numerodeserie	$partnumber	$nproc	$ncores	$ram	$almacenamiento	$osfamily	$sp	$WUdate	$LastBootUpTime" -append
 }
-catch{Append-Richtextbox -ComputerName $computername -Source "WMIInventoryHardware" -Message $_.Exception.Message -MessageColor 'red' -logfile 'ps1command.log'}
+catch{Append-Richtextbox -ComputerName $computername -Source $scriptbasename -Message $_.Exception.Message -MessageColor 'red' -logfile 'ps1command.log'}
 
 
 			

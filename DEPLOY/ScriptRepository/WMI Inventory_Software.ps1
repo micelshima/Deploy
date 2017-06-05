@@ -1,6 +1,7 @@
+$scriptbasename=$MyInvocation.Mycommand.name.substring(0,$MyInvocation.Mycommand.name.lastindexof('.'))
 $HKLM = 2147483650
-$logfile="LOGS\WMI Inventory Software.csv"
-if (!(test-path $logfile)){out-file $logfile -input "SERVER	DISPLAYNAME	UNINSTALLSTRING"}
+$logfile= "results\$($scriptbasename).csv"
+if (!(test-path $logfile)){out-file $logfile -input "servidor	displayname	uninstallstring"}
 try{
 	if($scope -eq ''){$reg = gwmi -List -Namespace root\default -ComputerName $computername|?{$_.Name -eq "StdRegProv"}}
 	else{$reg = gwmi -List -Namespace root\default -ComputerName $computername -credential $creds|?{$_.Name -eq "StdRegProv"}}
@@ -14,4 +15,4 @@ try{
 		}
 	}
 }
-catch{Append-Richtextbox -ComputerName $computername -Source "WMIInventorySoftware" -Message $_.Exception.Message -MessageColor 'red' -logfile 'ps1command.log'}
+catch{Append-Richtextbox -ComputerName $computername -Source $scriptbasename -Message $_.Exception.Message -MessageColor 'red' -logfile 'ps1command.log'}
