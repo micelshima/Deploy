@@ -68,7 +68,7 @@ Function fill-TreeView($scriptsrepository,$treeview)
 	{
 	"BAT"{$indexicon=1}
 	"PS"{$indexicon=2}
-	"TXT"{$indexicon=1}
+	"TXT"{$indexicon=3}
 	}
 gci $scriptsrepository|select -expand basename|%{
     try{
@@ -208,7 +208,7 @@ $Form1.Add_Resize({
 })	
 #Imagelist
 $ImageList = new-Object System.Windows.Forms.ImageList
-$ImageList.ImageSize=new-object System.Drawing.Size(16,12)
+$ImageList.ImageSize=new-object System.Drawing.Size(16,16)
 gci "$PSScriptRoot\ico\*.png"|%{
 	$imagetxt = [System.Drawing.Image]::FromFile($_.fullname)
 	$imageList.Images.Add("img",$imagetxt)
@@ -239,6 +239,19 @@ $pictureBox.TabStop = $false
 $base64logo="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"
 $pictureBox.image=base64imagestring2image($base64logo)
 $Form1.Controls.Add($pictureBox)
+$buttonexplorer = New-Object System.Windows.Forms.Button
+$buttonexplorer.Location = new-object System.Drawing.Point(146,55)
+$buttonexplorer.Size = New-Object System.Drawing.Size(20,20)
+$buttonexplorer.Font = $css_buttonery.font
+$buttonexplorer.image=$ImageList.images[3] #file icon
+$buttonexplorer.Add_Click({
+	$OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+    $OpenFileDialog.initialDirectory = $initialDirectory
+    $OpenFileDialog.filter = "txt (*.txt)| *.txt"
+    $OpenFileDialog.ShowDialog() | Out-Null
+    $textboxobjects.text=$textboxobjects.text + ((get-content $OpenFileDialog.filename) -join ("`n`r"))
+	})
+$form1.controls.add($buttonexplorer)
 $textboxobjects = New-Object System.Windows.Forms.textbox
 $textboxobjects.Location = new-object System.Drawing.Point(5,75)
 $textboxobjects.Size = new-object System.Drawing.Size(160,($Form1.ClientSize.height -80))
@@ -293,6 +306,8 @@ $tabControl1.Add_DoubleClick({
 	fill-treeview "$psscriptroot\ScriptRepository\*.bat" $TreeViewbat
 	$TreeViewps.nodes.clear()
 	fill-treeview "$psscriptroot\ScriptRepository\*.ps1" $TreeViewps
+	$TreeViewtxt.nodes.clear()
+	fill-treeview "$psscriptroot\ScriptRepository\*.txt" $TreeViewtxt
 	})
 $form1.controls.add($tabControl1)
 $tabPage1 = New-Object System.Windows.Forms.TabPage
@@ -415,10 +430,9 @@ $TreeViewps.Hideselection=$false
 $tabPage2.Controls.Add($TreeViewps)
 fill-treeview "$psscriptroot\ScriptRepository\*.ps1" $TreeViewps
 $TreeViewps.Add_AfterSelect({
-$script:ps1filebasename=$_.Node.Text
-$script:ps1filefullname="$psscriptroot\ScriptRepository\$($_.Node.FULLPATH).ps1"
-})
-
+	$script:ps1filebasename=$_.Node.Text
+	$script:ps1filefullname="$psscriptroot\ScriptRepository\$($_.Node.FULLPATH).ps1"
+	})
 $buttonps = New-Object System.Windows.Forms.Button
 $buttonps.Location = new-object System.Drawing.Point(5,($tabControl1.size.height -60))
 $buttonps.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),22)
@@ -430,7 +444,7 @@ $buttonps.Add_Click({
 	if($scope -ne '')
 	{
 	$creds=select-MiCredential -scope $scope
-	Append-Richtextbox -Source "Credentials" -Message "Using $($creds.text) ($($creds.username))" -MessageColor 'Blue' -logfile 'ps1command.log'
+	Append-Richtextbox -Source "Credentials" -Message "Using $($combocreds.text) ($($creds.username))" -MessageColor 'Blue' -logfile 'ps1command.log'
 	}
 	else
 	{
@@ -440,7 +454,7 @@ $buttonps.Add_Click({
 	
 	$objcomputers=$textboxobjects.text.Split("`n`r") -replace "`#.*", "$([char]0)" -replace "#.*" -replace "$([char]0)", "#" -replace "^\s*" -replace "\s*$"|?{$_;}
 	if($RadioButtonping.Checked){$objcomputers=ping-computers $objcomputers}
-	elseif($RadioButtonports.Checked){$objcomputers=test-ports $objcomputers (5985,5986)}
+	elseif($RadioButtonports.Checked){$objcomputers=test-ports $objcomputers (139,445,5985,5986)}
 
 	if ($objcomputers.length -ne 0 -and (test-path $ps1filefullname))
 	{
