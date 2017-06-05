@@ -121,7 +121,7 @@ $count=0
 	{
 	If ($objcomputers.GetType().Name -match "Object"){$total=$objcomputers.length}else{$total=1}
 	$percent=[int](($count/$total)*100)	
-	Write-Progress -CurrentOperation "$percent% Completed ($count/$total)" -status "Pinging $computername" -Activity "PINGING" -PercentComplete $percent
+	Write-Progress -CurrentOperation "$percent% Completed ($count/$total)" -status "Testing $computername ports" -Activity "TESTING PORTS" -PercentComplete $percent
 	$count++
 	$color='green'
 	$checkedports=""
@@ -171,6 +171,7 @@ import-module "$PSScriptRoot\..\_Modules\MiCredentialModule"
 [void][System.Reflection.Assembly]::loadwithpartialname("System.Drawing")
 [System.Windows.Forms.Application]::EnableVisualStyles()
 $treeSeparator="_"
+'logs','results'|%{if(!(test-path "$PSScriptRoot\$_")){md "$PSScriptRoot\$_"}}
 $css=[pscustomobject]@{
 	labelcolor=[System.Drawing.Color]::WhiteSmoke
 	formcolor=[System.Drawing.Color]::Gray
