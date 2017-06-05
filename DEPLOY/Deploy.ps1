@@ -527,7 +527,7 @@ $buttonplink.Add_Click({
 				write-host "`n$computername : Deploying $txtfilebasename..." -fore yellow				
 				if ($scope -ne '')
 				{
-				$plinkcommand="$psscriptroot\..\_bin\plink.exe -v {1}@{0} -pw '{2}' -m '{3}' >> 'Results\{4}.log'" -f $computername,$credsplain.username,$credsplain.password,$txtfilefullname,$txtfilebasename
+				$plinkcommand="$psscriptroot\..\_bin\plink.exe -v {1}@{0} -pw '{2}' -m '{3}' >> 'Results\{4}.txt'" -f $computername,$credsplain.username,$credsplain.password,$txtfilefullname,$txtfilebasename
 				invoke-expression $plinkcommand				
 				$msg="{0}: exitcode:{1} executing:{2}" -f $computername,$lastexitcode,$txtfilebasename
 				if($lastexitcode -eq 1){$color='red'}else{$color='green'}
