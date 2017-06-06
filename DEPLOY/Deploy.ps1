@@ -64,6 +64,7 @@ Function Add-Node($Nodes,$Path,$icon)
 }
 Function fill-TreeView($scriptsrepository,$treeview)
 {
+$TreeView.nodes.clear()
 	switch ($treeview.name)
 	{
 	"BAT"{$indexicon=1}
@@ -303,11 +304,8 @@ $tabControl1.SelectedIndex = 0
 $tabControl1.Size = new-object System.Drawing.Size(300,($Form1.ClientSize.height -60))
 $tabControl1.TabIndex = 2
 $tabControl1.Add_DoubleClick({
-	$TreeViewbat.nodes.clear()
 	fill-treeview "$psscriptroot\ScriptRepository\*.bat" $TreeViewbat
-	$TreeViewps.nodes.clear()
 	fill-treeview "$psscriptroot\ScriptRepository\*.ps1" $TreeViewps
-	$TreeViewtxt.nodes.clear()
 	fill-treeview "$psscriptroot\ScriptRepository\*.txt" $TreeViewtxt
 	})
 $form1.controls.add($tabControl1)
@@ -455,7 +453,7 @@ $buttonps.Add_Click({
 	
 	$objcomputers=$textboxobjects.text.Split("`n`r") -replace "`#.*", "$([char]0)" -replace "#.*" -replace "$([char]0)", "#" -replace "^\s*" -replace "\s*$"|?{$_;}
 	if($RadioButtonping.Checked){$objcomputers=ping-computers $objcomputers}
-	elseif($RadioButtonports.Checked){$objcomputers=test-ports $objcomputers (139,445,5985,5986)}
+	elseif($RadioButtonports.Checked){$objcomputers=test-ports $objcomputers (139,445,5985)}
 
 	if ($objcomputers.length -ne 0 -and (test-path $ps1filefullname))
 	{
