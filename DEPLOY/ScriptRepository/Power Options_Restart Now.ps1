@@ -1,0 +1,1 @@
+restart-computer -computername $computername -credential $creds -force -confirm:$false
