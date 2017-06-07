@@ -176,6 +176,7 @@ $treeSeparator="_"
 $css=[pscustomobject]@{
 	labelcolor=[System.Drawing.Color]::WhiteSmoke
 	formcolor=[System.Drawing.Color]::Gray
+	formcolorPS=[System.Drawing.Color]::Navy
 	tabcolor=[System.Drawing.Color]::White
 	textfont= new-object System.Drawing.Font("Lucida Console",10)
 	checkboxfont=new-object System.Drawing.Font("Calibri",8)
@@ -303,6 +304,13 @@ $tabControl1.Location = new-object System.Drawing.Point(170,55)
 $tabControl1.SelectedIndex = 0
 $tabControl1.Size = new-object System.Drawing.Size(300,($Form1.ClientSize.height -60))
 $tabControl1.TabIndex = 2
+$tabControl1.Add_SelectedIndexChanged({
+		switch($tabcontrol1.SelectedTab)
+		{
+		$tabPage2 {$Form1.backcolor=$css.formcolorPS}
+		default{$Form1.backcolor=$css.formcolor}
+		}
+	})
 $tabControl1.Add_DoubleClick({
 	fill-treeview "$psscriptroot\ScriptRepository\*.bat" $TreeViewbat
 	fill-treeview "$psscriptroot\ScriptRepository\*.ps1" $TreeViewps
@@ -405,7 +413,7 @@ $buttonpsexec.Add_Click({
 				$cmdkeydelete="cmdkey.exe /delete:" + $computername
 				if ($scope -ne ''){invoke-expression $cmdkeyadd}
 				invoke-expression $psexeccommand				
-				$msg="{0}: exitcode:{1} executing:{2} with params:{3}" -f $computername,$lastexitcode,$batfilebasename,$params
+				$msg="{0}: executing:{1} with params:{2} exitcode:{3}" -f $computername,$batfilebasename,$params,$lastexitcode
 				if($lastexitcode -in (5,6,50,53,122,1311,1326,2250)){$color='red'}else{$color='green'}
 				Append-Richtextbox -ComputerName $computername -Source "Psexec" -Message $msg -MessageColor $color -logfile 'psexec.log'
 				if ($scope -ne ''){invoke-expression $cmdkeydelete}
