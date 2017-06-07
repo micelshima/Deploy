@@ -199,10 +199,10 @@ $Form1.Add_Resize({
 	$TreeViewbat.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -130))
 	$buttonpsexec.Location = new-object System.Drawing.Point(5,($tabControl1.size.height -60))
 	$buttonpsexec.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),22)
-	$TreeViewps.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -130))
+	$TreeViewps.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -100))
 	$buttonps.Location = new-object System.Drawing.Point(5,($tabControl1.size.height -60))
 	$buttonps.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),22)
-	$TreeViewtxt.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -130))
+	$TreeViewtxt.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -100))
 	$buttonplink.Location = new-object System.Drawing.Point(5,($tabControl1.size.height -60))
 	$buttonplink.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),22)
 	$richtextbox.Size = new-object System.Drawing.Size(($Form1.ClientSize.Width -480),($Form1.ClientSize.height -91))
@@ -486,8 +486,8 @@ $buttonps.Add_Click({
 $TreeViewtxt = New-Object Windows.Forms.TreeView
 $TreeViewtxt.name="TXT"
 $TreeViewtxt.PathSeparator = $treeSeparator
-$TreeViewtxt.Location = New-Object System.Drawing.Point(5,45) 
-$TreeViewtxt.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -130))
+$TreeViewtxt.Location = New-Object System.Drawing.Point(5,15) 
+$TreeViewtxt.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -100))
 $TreeViewtxt.borderstyle = 0 #0=sin borde, 2=borde 1=hundido
 $TreeViewtxt.BackColor = $css.tabcolor
 $TreeViewtxt.imagelist = $imageList
