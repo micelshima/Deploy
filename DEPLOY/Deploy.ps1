@@ -78,7 +78,7 @@ gci $scriptsrepository|select -expand basename|%{
 			foreach ($node in $fullnodexceptlast.split($treeSeparator))
 			{
 			$fullnode+="$treeSeparator$node"
-			Add-Node $TreeView.Nodes $fullnode.substring(1) 0
+			Add-Node $TreeView.Nodes $fullnode.substring(1) 0 #remove first character when adding the node (it is always a separator)
 			}
 		}
     catch{}
@@ -172,7 +172,7 @@ import-module "$PSScriptRoot\..\_Modules\MiCredentialModule"
 [void][System.Reflection.Assembly]::loadwithpartialname("System.Drawing")
 [System.Windows.Forms.Application]::EnableVisualStyles()
 $treeSeparator="_"
-'logs','results'|%{if(!(test-path "$PSScriptRoot\$_")){md "$PSScriptRoot\$_"}}
+'Logs','Results'|%{if(!(test-path "$PSScriptRoot\$_")){md "$PSScriptRoot\$_"}}
 $css=[pscustomobject]@{
 	labelcolor=[System.Drawing.Color]::WhiteSmoke
 	formcolor=[System.Drawing.Color]::Gray
@@ -249,7 +249,7 @@ $buttonexplorer.Font = $css_buttonery.font
 $buttonexplorer.image=$ImageList.images[3] #file icon
 $buttonexplorer.Add_Click({
 	$OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
-    $OpenFileDialog.initialDirectory = $initialDirectory
+    $OpenFileDialog.initialDirectory = $PSScriptroot
     $OpenFileDialog.filter = "txt (*.txt)| *.txt"
     $OpenFileDialog.ShowDialog() | Out-Null
     $textboxobjects.text=$textboxobjects.text + ((get-content $OpenFileDialog.filename) -join ("`n`r"))
@@ -421,6 +421,7 @@ $buttonpsexec.Add_Click({
 				$progressBar1.PerformStep()
 				}
 		Write-Progress -Activity "DEPLOYING BAT'S" -Completed
+		Append-Richtextbox -Source "Psexec" -Message "END OF DEPLOYMENT" -MessageColor 'Blue'
 		write-host "END OF DEPLOYMENT" -fore magenta
 	}
 })
@@ -479,6 +480,7 @@ $buttonps.Add_Click({
 				$progressBar1.PerformStep()
 				}
 		Write-Progress -Activity "RUNNING PS1'S" -Completed
+		Append-Richtextbox -Source "ps1command" -Message "END OF DEPLOYMENT" -MessageColor 'Blue'
 		write-host "END OF DEPLOYMENT" -fore cyan
 	}
 })
@@ -545,6 +547,7 @@ $buttonplink.Add_Click({
 				$progressBar1.PerformStep()
 				}
 		Write-Progress -Activity "DEPLOYING TXT'S" -Completed
+		Append-Richtextbox -Source "Plink" -Message "END OF DEPLOYMENT" -MessageColor 'Blue'
 		write-host "END OF DEPLOYMENT" -fore yellow
 	}
 })
@@ -569,12 +572,12 @@ $Form1.Controls.Add($progressBar1)
 #muestro el formulario
 write-host ''
 write-host '  8888888P.                    888'
-write-host '  888   d88P                   888'
+write-host '  888  "788b                   888'
 write-host '  888    888                   888'
 write-host '  888    888 ,A8888A, 88888Y,  888 ,A8888A, 888  888'
 write-host '  888    888 888  888 888 788Y 888 888  888 888  888'
 write-host '  888    888 888888Y" 888  888 888 888  888 888  888'
-write-host '  888  ,Y88b 888      888  888 888 888  888 Y88b 888'
+write-host '  888  ,d88P 888      888  888 888 888  888 Y88b 888'
 write-host '  8888888K"  "Y8888Y" 888888Y" 888 "Y8888Y"  "Y88888'
 write-host '                      888                       "888'
 write-host '                      888                       .888'
