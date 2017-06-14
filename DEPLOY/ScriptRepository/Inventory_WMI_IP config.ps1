@@ -1,6 +1,6 @@
 $scriptbasename=$MyInvocation.Mycommand.name.substring(0,$MyInvocation.Mycommand.name.lastindexof('.'))
 $logfile= "results\$($scriptbasename).csv"
-if (!(test-path $logfile)){out-file $logfile -input "Computername	displayname	uninstallstring"}
+if (!(test-path $logfile)){out-file $logfile -input "Computername	IPAddress	SubnetMask	DefaultGateway	MACAddress	IsDHCPEnabled	DNSServers"}
 try{
 	if($scope -eq ''){$result = gwmi Win32_NetworkAdapterConfiguration -ComputerName $computername -ea stop|?{$_.IPEnabled}}
 	else{$result = gwmi Win32_NetworkAdapterConfiguration -ComputerName $computername -credential $creds -ea stop|?{$_.IPEnabled}}
