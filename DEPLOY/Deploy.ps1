@@ -168,6 +168,7 @@ return [System.Drawing.Image]::FromStream($ms, $true)
 }
 ### main ###
 import-module "$PSScriptRoot\..\_Modules\MiCredentialModule"
+$identity=([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).identities.name
 [void][System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
 [void][System.Reflection.Assembly]::loadwithpartialname("System.Drawing")
 [System.Windows.Forms.Application]::EnableVisualStyles()
@@ -185,7 +186,7 @@ $css=[pscustomobject]@{
 #Formulario
 $Form1 = New-Object System.Windows.Forms.Form
 $Form1.ClientSize = new-object System.Drawing.Size(900, 525)
-$Form1.text="SistemasWin | MiShell Deploy"
+$Form1.text="SistemasWin | MiShell Deploy | $identity"
 $Icon = [system.drawing.icon]::ExtractAssociatedIcon("$PSHOME\powershell.exe")
 $Form1.Icon = $Icon
 $Form1.backcolor=$css.formcolor
@@ -196,13 +197,13 @@ $Form1.Add_Resize({
 	$pictureBox.Location = new-object System.Drawing.Point(($Form1.ClientSize.width -155),10)
 	$textboxobjects.Size = new-object System.Drawing.Size(160,($Form1.ClientSize.height -80))
 	$tabControl1.Size = new-object System.Drawing.Size(300,($Form1.ClientSize.height -60))
-	$TreeViewbat.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -130))
+	$TreeViewbat.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -110))
 	$buttonpsexec.Location = new-object System.Drawing.Point(5,($tabControl1.size.height -60))
 	$buttonpsexec.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),22)
-	$TreeViewps.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -100))
+	$TreeViewps.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -80))
 	$buttonps.Location = new-object System.Drawing.Point(5,($tabControl1.size.height -60))
 	$buttonps.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),22)
-	$TreeViewtxt.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -100))
+	$TreeViewtxt.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -80))
 	$buttonplink.Location = new-object System.Drawing.Point(5,($tabControl1.size.height -60))
 	$buttonplink.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),22)
 	$richtextbox.Size = new-object System.Drawing.Size(($Form1.ClientSize.Width -480),($Form1.ClientSize.height -91))
@@ -245,7 +246,6 @@ $Form1.Controls.Add($pictureBox)
 $buttonexplorer = New-Object System.Windows.Forms.Button
 $buttonexplorer.Location = new-object System.Drawing.Point(146,55)
 $buttonexplorer.Size = New-Object System.Drawing.Size(20,20)
-$buttonexplorer.Font = $css_buttonery.font
 $buttonexplorer.image=$ImageList.images[3] #file icon
 $buttonexplorer.Add_Click({
 	$OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
@@ -312,9 +312,12 @@ $tabControl1.Add_SelectedIndexChanged({
 		}
 	})
 $tabControl1.Add_DoubleClick({
-	fill-treeview "$psscriptroot\ScriptRepository\*.bat" $TreeViewbat
-	fill-treeview "$psscriptroot\ScriptRepository\*.ps1" $TreeViewps
-	fill-treeview "$psscriptroot\ScriptRepository\*.txt" $TreeViewtxt
+		switch($tabcontrol1.SelectedTab)
+		{
+		$tabPage1 {fill-treeview "$psscriptroot\ScriptRepository\*.bat" $TreeViewbat}
+		$tabPage2 {fill-treeview "$psscriptroot\ScriptRepository\*.ps1" $TreeViewps}
+		$tabPage3 {fill-treeview "$psscriptroot\ScriptRepository\*.txt" $TreeViewtxt}
+		}
 	})
 $form1.controls.add($tabControl1)
 $tabPage1 = New-Object System.Windows.Forms.TabPage
@@ -357,7 +360,7 @@ $TreeViewbat = New-Object Windows.Forms.TreeView
 $TreeViewbat.name="BAT"
 $TreeViewbat.PathSeparator = $treeSeparator
 $TreeViewbat.Location = New-Object System.Drawing.Point(5,45) 
-$TreeViewbat.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -130))
+$TreeViewbat.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -110))
 $TreeViewbat.borderstyle = 0 #0=sin borde, 2=borde 1=hundido
 $TreeViewbat.BackColor = $css.tabcolor
 $TreeViewbat.imagelist = $imageList
@@ -381,11 +384,7 @@ $buttonpsexec.Add_Click({
 	$credsplain=select-MiCredential -scope $scope -plain
 	Append-Richtextbox -Source "Credentials" -Message "Using $($combocreds.text) ($($credsplain.username))" -MessageColor 'Blue' -logfile 'psexec.log'
 	}
-	else
-	{
-	$identity=([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).identities.name
-	Append-Richtextbox -Source "Credentials" -Message "Using Current Credentials ($identity)" -MessageColor 'Blue' -logfile 'psexec.log'
-	}
+	else{Append-Richtextbox -Source "Credentials" -Message "Using Current Credentials ($identity)" -MessageColor 'Blue' -logfile 'psexec.log'}
 	
 	$objcomputers=$textboxobjects.text.Split("`n`r") -replace "`#.*", "$([char]0)" -replace "#.*" -replace "$([char]0)", "#" -replace "^\s*" -replace "\s*$"|?{$_;}
 	if($RadioButtonping.Checked){$objcomputers=ping-computers $objcomputers}
@@ -430,7 +429,7 @@ $TreeViewps = New-Object Windows.Forms.TreeView
 $TreeViewps.name="PS"
 $TreeViewps.PathSeparator = $treeSeparator
 $TreeViewps.Location = New-Object System.Drawing.Point(5,15) 
-$TreeViewps.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -100))
+$TreeViewps.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -80))
 $TreeViewps.borderstyle = 0 #0=sin borde, 2=borde 1=hundido
 $TreeViewps.BackColor = $css.tabcolor
 $TreeViewps.imagelist = $imageList
@@ -454,11 +453,7 @@ $buttonps.Add_Click({
 	$creds=select-MiCredential -scope $scope
 	Append-Richtextbox -Source "Credentials" -Message "Using $($combocreds.text) ($($creds.username))" -MessageColor 'Blue' -logfile 'ps1command.log'
 	}
-	else
-	{
-	$identity=([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).identities.name
-	Append-Richtextbox -Source "Credentials" -Message "Using Current Credentials ($identity)" -MessageColor 'Blue' -logfile 'ps1command.log'
-	}
+	else{Append-Richtextbox -Source "Credentials" -Message "Using Current Credentials ($identity)" -MessageColor 'Blue' -logfile 'ps1command.log'}
 	
 	$objcomputers=$textboxobjects.text.Split("`n`r") -replace "`#.*", "$([char]0)" -replace "#.*" -replace "$([char]0)", "#" -replace "^\s*" -replace "\s*$"|?{$_;}
 	if($RadioButtonping.Checked){$objcomputers=ping-computers $objcomputers}
@@ -475,7 +470,6 @@ $buttonps.Add_Click({
 				$count++
 				write-host "`n$computername : Running $ps1filebasename..." -fore cyan
 				Append-Richtextbox -ComputerName $computername -Source "ps1command" -Message "Running $ps1filebasename" -MessageColor 'blue' -logfile 'ps1command.log'
-				#$result=invoke-command -computername $computername -credential $creds -filepath  $ps1filefullname
 				. $ps1filefullname
 				$progressBar1.PerformStep()
 				}
@@ -489,7 +483,7 @@ $TreeViewtxt = New-Object Windows.Forms.TreeView
 $TreeViewtxt.name="TXT"
 $TreeViewtxt.PathSeparator = $treeSeparator
 $TreeViewtxt.Location = New-Object System.Drawing.Point(5,15) 
-$TreeViewtxt.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -100))
+$TreeViewtxt.Size = New-Object System.Drawing.Size(($tabControl1.size.width -20),($tabControl1.size.height -80))
 $TreeViewtxt.borderstyle = 0 #0=sin borde, 2=borde 1=hundido
 $TreeViewtxt.BackColor = $css.tabcolor
 $TreeViewtxt.imagelist = $imageList
@@ -513,11 +507,7 @@ $buttonplink.Add_Click({
 	$credsplain=select-MiCredential -scope $scope -plain
 	Append-Richtextbox -Source "Credentials" -Message "Using $($combocreds.text) ($($credsplain.username))" -MessageColor 'Blue' -logfile 'plink.log'
 	}
-	else
-	{
-	$identity=([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).identities.name
-	Append-Richtextbox -Source "Credentials" -Message "Using Current Credentials ($identity)" -MessageColor 'Blue' -logfile 'plink.log'
-	}
+	else{Append-Richtextbox -Source "Credentials" -Message "Using Current Credentials ($identity)" -MessageColor 'Blue' -logfile 'plink.log'}
 	
 	$objcomputers=$textboxobjects.text.Split("`n`r") -replace "`#.*", "$([char]0)" -replace "#.*" -replace "$([char]0)", "#" -replace "^\s*" -replace "\s*$"|?{$_;}
 	if($RadioButtonping.Checked){$objcomputers=ping-computers $objcomputers}
@@ -551,7 +541,27 @@ $buttonplink.Add_Click({
 		write-host "END OF DEPLOYMENT" -fore yellow
 	}
 })
+$buttonopenlogs = New-Object System.Windows.Forms.Button
+$buttonopenlogs.Location = new-object System.Drawing.Point(475,55)
+$buttonopenlogs.Size = New-Object System.Drawing.Size(50,20)
+$buttonopenlogs.font=$css.checkboxfont
+$buttonopenlogs.flatstyle="System"
+$buttonopenlogs.text="Logs"
+$buttonopenlogs.Add_Click({
+	Invoke-Item "$PSScriptRoot\Logs"
+	})
+$form1.controls.add($buttonopenlogs)
+$buttonopenresults = New-Object System.Windows.Forms.Button
+$buttonopenresults.Location = new-object System.Drawing.Point(525,55)
+$buttonopenresults.Size = New-Object System.Drawing.Size(60,20)
+$buttonopenresults.font=$css.checkboxfont
+$buttonopenresults.flatstyle="System"
+$buttonopenresults.text="Results"
 
+$buttonopenresults.Add_Click({
+	Invoke-Item "$PSScriptRoot\Results"
+	})
+$form1.controls.add($buttonopenresults)
 $richtextbox = New-Object System.Windows.Forms.RichTextBox
 $richtextbox.Location = new-object System.Drawing.Point(475,75)
 $richtextbox.Size = new-object System.Drawing.Size(($Form1.ClientSize.Width -480),($Form1.ClientSize.height -91))
@@ -569,17 +579,20 @@ $progressBar1.Step = 1
 $progressBar1.TabIndex = 0
 $progressBar1.Style = 1
 $Form1.Controls.Add($progressBar1)
-#muestro el formulario
+#Personalizo la consola
+$host.ui.RawUI.WindowTitle="SistemasWin | MiShell Deploy | $identity"
 write-host ''
 write-host '  8888888P.                    888'
 write-host '  888  "788b                   888'
 write-host '  888    888                   888'
 write-host '  888    888 ,A8888A, 88888Y,  888 ,A8888A, 888  888'
-write-host '  888    888 888  888 888 788Y 888 888  888 888  888'
+write-host '  888    888 888  888 888 "88Y 888 888  888 888  888'
 write-host '  888    888 888888Y" 888  888 888 888  888 888  888'
 write-host '  888  ,d88P 888      888  888 888 888  888 Y88b 888'
 write-host '  8888888K"  "Y8888Y" 888888Y" 888 "Y8888Y"  "Y88888'
 write-host '                      888                       "888'
 write-host '                      888                       .888'
 write-host '                      888                    8888P" '
+write-host ''
+#muestro el formulario
 [System.Windows.Forms.Application]::Run($Form1)
