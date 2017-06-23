@@ -39,6 +39,7 @@ Function select-MiCredential{
 	)
 	process{
 	if(!$scope){$scope=credentialWinForm}
+	$scope=$scope -replace ('[\\/:*?"<>|]',' ')
 	$credfile="$pwd\creds\$($env:username)_$scope.cred"
 	if (!(test-path -path $credfile))
 		{
