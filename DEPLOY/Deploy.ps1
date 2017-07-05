@@ -181,7 +181,7 @@ $css=[pscustomobject]@{
 	tabcolor=[System.Drawing.Color]::White
 	textfont= new-object System.Drawing.Font("Lucida Console",10)
 	checkboxfont=new-object System.Drawing.Font("Calibri",8)
-	richtextfont=new-object System.Drawing.Font("Lucida Console",10)
+	richtextfont=new-object System.Drawing.Font("Lucida Console",9)
 	}
 #Formulario
 $Form1 = New-Object System.Windows.Forms.Form
@@ -252,7 +252,7 @@ $buttonexplorer.Add_Click({
     $OpenFileDialog.initialDirectory = $PSScriptroot
     $OpenFileDialog.filter = "txt (*.txt)| *.txt"
     $OpenFileDialog.ShowDialog() | Out-Null
-    $textboxobjects.text=$textboxobjects.text + ((get-content $OpenFileDialog.filename) -join ("`n`r"))
+	if ($OpenFileDialog.FileName){$textboxobjects.text=$textboxobjects.text + ((get-content $OpenFileDialog.filename) -join ("`n`r"))}
 	})
 $form1.controls.add($buttonexplorer)
 $textboxobjects = New-Object System.Windows.Forms.textbox
