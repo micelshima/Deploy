@@ -86,7 +86,7 @@ Function ping-computers($objcomputers) {
 	foreach ($computername in $objcomputers) {
 		If ($objcomputers.GetType().Name -match "Object") {$total = $objcomputers.length}else {$total = 1}
 		$percent = [int](($count / $total) * 100)
-		Write-Progress -CurrentOperation "$percent% Completed ($count/$total)" -status "Pinging $computername" -Activity "PINGING" -PercentComplete $percent
+		Write-Progress -Activity "PINGING" -CurrentOperation "Pinging $computername" -status "$percent% Completed ($count/$total)" -PercentComplete $percent
 		$count++
 		$resultado = Test-Connection -ComputerName $computername -Count 1 -BufferSize 16 -quiet
 		if ($resultado -eq $true) {
@@ -110,7 +110,7 @@ Function test-ports($objcomputers, $ports) {
 	foreach ($computername in $objcomputers) {
 		If ($objcomputers.GetType().Name -match "Object") {$total = $objcomputers.length}else {$total = 1}
 		$percent = [int](($count / $total) * 100)
-		Write-Progress -CurrentOperation "$percent% Completed ($count/$total)" -status "Testing $computername ports" -Activity "TESTING PORTS" -PercentComplete $percent
+		Write-Progress -Activity "TESTING PORTS" -CurrentOperation "Testing $computername ports" -status "$percent% Completed ($count/$total)" -PercentComplete $percent
 		$count++
 		$color = 'green'
 		$checkedports = ""
@@ -379,7 +379,7 @@ $buttonpsexec.Add_Click( {
 
 			foreach ($computername in $objcomputers) {
 				$percent = [int](($count / $total) * 100)
-				Write-Progress -CurrentOperation "$percent% Completed ($count/$total)" -status "Deploying $batfilebasename to $computername with psexec" -activity "DEPLOYING BAT's" -PercentComplete $percent
+				Write-Progress -activity "DEPLOYING BAT's" -CurrentOperation "Deploying $batfilebasename to $computername with psexec" -status "$percent% Completed ($count/$total)" -PercentComplete $percent
 				$count++
 				write-host "`n$computername : Deploying $batfilebasename..." -fore magenta
 				$params = ""
@@ -444,7 +444,7 @@ $buttonps.Add_Click( {
 			If ($objcomputers.GetType().Name -match "Object") {$progressBar1.Maximum = $total = $objcomputers.length}else {$progressBar1.Maximum = $total = 1}
 			foreach ($computername in $objcomputers) {
 				$percent = [int](($count / $total) * 100)
-				Write-Progress -CurrentOperation "$percent% Completed ($count/$total)" -status "Running $ps1filebasename to $computername" -activity "RUNNING PS1'S" -PercentComplete $percent
+				Write-Progress -activity "RUNNING PS1'S" -CurrentOperation "Running $ps1filebasename to $computername" -status "$percent% Completed ($count/$total)" -PercentComplete $percent
 				$count++
 				write-host "`n$computername : Running $ps1filebasename..." -fore cyan
 				Append-Richtextbox -ComputerName $computername -Source "ps1command" -Message "Running $ps1filebasename" -MessageColor 'blue' -logfile 'ps1command.log'
@@ -497,11 +497,11 @@ $buttonplink.Add_Click( {
 
 			foreach ($computername in $objcomputers) {
 				$percent = [int](($count / $total) * 100)
-				Write-Progress -CurrentOperation "$percent% Completed ($count/$total)" -status "Deploying $txtfilebasename to $computername with plink" -activity "DEPLOYING TXT's" -PercentComplete $percent
+				Write-Progress -activity "DEPLOYING TXT's" -CurrentOperation "Deploying $txtfilebasename to $computername with plink" -status "$percent% Completed ($count/$total)" -PercentComplete $percent
 				$count++
 				write-host "`n$computername : Deploying $txtfilebasename..." -fore yellow
 				if ($scope -ne '') {
-					$plinkcommand = "$psscriptroot\..\_bin\plink.exe -v {1}@{0} -pw '{2}' -batch -m '{3}' >> 'Results\{4}.txt'" -f $computername, $credsplain.username, $credsplain.password, $txtfilefullname, $txtfilebasename
+					$plinkcommand = "$psscriptroot\..\_bin\plink.exe -v {1}@{0} -pw '{2}' -m '{3}' >> 'Results\{4}.txt'" -f $computername, $credsplain.username, $credsplain.password, $txtfilefullname, $txtfilebasename
 					invoke-expression $plinkcommand
 					$msg = "{0}: exitcode:{1} executing:{2}" -f $computername, $lastexitcode, $txtfilebasename
 					if ($lastexitcode -eq 1) {$color = 'red'}else {$color = 'green'}
