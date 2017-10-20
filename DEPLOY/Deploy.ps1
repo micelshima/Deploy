@@ -213,13 +213,25 @@ $combocreds.items.addrange($array)
 if ($array.gettype().name -eq "Object[]") {$combocreds.text = $array[0]}
 else {$combocreds.text = $array}
 $form1.Controls.Add($combocreds)
+$combocreds.Add_textchanged( {
+		if ($combocreds.text -ne '') {
+			$buttonpsexec.text = "$($combocreds.text) > Deploy with Psexec"
+			$buttonps.text = "$($combocreds.text) > Run PS1"
+			$buttonplink.text = "$($combocreds.text) > Deploy with Plink"
+		}
+		else {
+			$buttonpsexec.text = "Deploy with Psexec"
+			$buttonps.text = "Run PS1"
+			$buttonplink.text = "Deploy with Plink"
+		}
+
+	})
 $labelcreds = New-Object System.Windows.Forms.Label
 $labelcreds.Location = New-Object System.Drawing.Point(5, 15)
 $labelcreds.Size = New-Object System.Drawing.Size(135, 20)
 $labelcreds.text = "Credentials"
 $labelcreds.foreColor = $css.labelcolor
 $form1.Controls.Add($labelcreds)
-
 $pictureBox = new-object System.Windows.Forms.PictureBox
 $pictureBox.Location = new-object System.Drawing.Point(($Form1.ClientSize.width - 155), 10)
 $pictureBox.Size = new-object System.Drawing.Size(150, 50)
@@ -359,7 +371,8 @@ $buttonpsexec = New-Object System.Windows.Forms.Button
 $buttonpsexec.Location = new-object System.Drawing.Point(5, ($tabControl1.size.height - 60))
 $buttonpsexec.Size = New-Object System.Drawing.Size(($tabControl1.size.width - 20), 22)
 $buttonpsexec.Font = $css_buttonery.font
-$buttonpsexec.text = "Deploy with Psexec"
+if ($combocreds.text -ne '') {$buttonpsexec.text = "$($combocreds.text) > Deploy with Psexec"}
+else {$buttonpsexec.text = "Deploy with Psexec"}
 $tabPage1.controls.add($buttonpsexec)
 $buttonpsexec.Add_Click( {
 		$scope = $combocreds.text
@@ -425,7 +438,8 @@ $buttonps = New-Object System.Windows.Forms.Button
 $buttonps.Location = new-object System.Drawing.Point(5, ($tabControl1.size.height - 60))
 $buttonps.Size = New-Object System.Drawing.Size(($tabControl1.size.width - 20), 22)
 $buttonps.Font = $css_buttonery.font
-$buttonps.text = "Run PS1"
+if ($combocreds.text -ne '') {$buttonps.text = "$($combocreds.text) > Run PS1"}
+else {$buttonps.text = "Run PS1"}
 $tabPage2.controls.add($buttonps)
 $buttonps.Add_Click( {
 		$scope = $combocreds.text
@@ -477,7 +491,8 @@ $buttonplink = New-Object System.Windows.Forms.Button
 $buttonplink.Location = new-object System.Drawing.Point(5, ($tabControl1.size.height - 60))
 $buttonplink.Size = New-Object System.Drawing.Size(($tabControl1.size.width - 20), 22)
 $buttonplink.Font = $css_buttonery.font
-$buttonplink.text = "Deploy with Plink"
+if ($combocreds.text -ne '') {$buttonplink.text = "$($combocreds.text) > Deploy with Plink"}
+else {$buttonplink.text = "Deploy with Plink"}
 $tabPage3.controls.add($buttonplink)
 $buttonplink.Add_Click( {
 		$scope = $combocreds.text
