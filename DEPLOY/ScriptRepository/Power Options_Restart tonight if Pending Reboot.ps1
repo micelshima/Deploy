@@ -10,11 +10,11 @@ if($reg.Enumkey($HKLM,"SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\A
 elseif($reg.Enumkey($HKLM,"SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing").snames -contains "RebootPending"){$pendingreboot=$true}
 elseif($reg.GetStringValue($HKLM,"SYSTEM\CurrentControlSet\Control\Session Manager","PendingFileRenameOperations").sValue){$pendingreboot=$true}
 elseif($reg.GetStringValue($HKLM,"SOFTWARE\Wow6432Node\Sophos\AutoUpdate\UpdateStatus\VolatileFlags","RebootRequired").sValue){$pendingreboot=$true}
-	
+
 if ($pendingreboot -eq $true)
 {
-Append-Richtextbox -ComputerName $computername -Source $scriptbasename -Message "Programando reinicio nocturno" -MessageColor 'blue' -logfile 'ps1command.log'
+Append-Richtextbox -ComputerName $computername -Source $scriptbasename -Message "Programando reinicio nocturno" -logfile 'ps1command.log'
 if($scope -eq ''){schtasks /create /S $computername /RU SYSTEM /SC ONCE /TN ReinicioEstaNoche /TR "shutdown.exe /r /t 0 /f" /ST 23:00 /F}
 else{schtasks /create /S $computername /U $credsplain.username /P "$($credsplain.password)" /RU SYSTEM /SC ONCE /TN ReinicioEstaNoche /TR "shutdown.exe /r /t 0 /f" /ST 23:00 /F}
 }
-else{Append-Richtextbox -ComputerName $computername -Source $scriptbasename -Message "No es necesario reiniciarlo" -MessageColor 'green' -logfile 'ps1command.log'}
+else{Append-Richtextbox -ComputerName $computername -Source $scriptbasename -Message "No es necesario reiniciarlo" -MessageColor $css.richtextcolorOK -logfile 'ps1command.log'}
