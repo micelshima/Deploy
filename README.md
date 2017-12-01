@@ -1,7 +1,7 @@
 # Deploy
 Powershell GUI to deploy your own scripts to remote computers.
 
-![alt tag](https://4.bp.blogspot.com/-uknJpXqoqrI/WiGVDLsI9GI/AAAAAAAACAg/Kn6daIOjvagNaU0lXBcCgf59RCxFB5hmQCEwYBhgL/s640/deployGUIv2.jpg)
+![alt tag](https://4.bp.blogspot.com/-uknJpXqoqrI/WiGVDLsI9GI/AAAAAAAACAg/Kn6daIOjvagNaU0lXBcCgf59RCxFB5hmQCEwYBhgL/s1600/deployGUIv2.jpg)
 
 STEPS:
 1. Choose the script you want to run from ScriptRepository
