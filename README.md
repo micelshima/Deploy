@@ -1,5 +1,5 @@
 # Deploy
-Powershell GUI to deploy batches to remote computers with psexec or execute powershell scripts to them
+Powershell GUI to deploy your own scripts to remote computers.
 
 ![alt tag](https://4.bp.blogspot.com/-uknJpXqoqrI/WiGVDLsI9GI/AAAAAAAACAg/Kn6daIOjvagNaU0lXBcCgf59RCxFB5hmQCEwYBhgL/s640/deployGUIv2.jpg)
 
