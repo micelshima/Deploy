@@ -1,7 +1,7 @@
 #MiShell DEPLOY
 #GUI for runnning remote batches/scripts
 #Mikel V.
-#2017/06/01 - 2017/12/01
+#2017/06/01
 function Append-Richtextbox {
 	PARAM(
 		[Parameter(Mandatory = $true)]
@@ -154,24 +154,13 @@ $identity = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsId
 [void][System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
 [void][System.Reflection.Assembly]::loadwithpartialname("System.Drawing")
 [System.Windows.Forms.Application]::EnableVisualStyles()
+#set random style
+$cssfiles = Get-ChildItem "$PSScriptRoot\css\*.ps1"|select -expand fullname
+$cssfile = get-random -input $cssfiles
+. $cssfile
 $treeSeparator = "_"
 'Logs', 'Results'| % {if (!(test-path "$PSScriptRoot\$_")) {md "$PSScriptRoot\$_"|out-null}}
-$css = [pscustomobject]@{
-	textcolor             = [System.Drawing.Color]::WhiteSmoke
-	formcolor             = [System.Drawing.Color]::Teal
-	tabcolor              = [System.Drawing.Color]::WhiteSmoke
-	DeployButton          = [System.Drawing.Color]::mediumseagreen
-	richcolor             = [System.Drawing.Color]::MidnightBlue
-	richtextcolor1        = 'white'
-	richtextcolor2        = 'DeepskyBlue'
-	richtextcolorOK       = 'lime'
-	richtextcolorERR      = 'OrangeRed'
-	richtextcolorcomputer = 'lightsalmon'
-	richtextcolorwarning  = 'yellow'
-	textfont              = new-object System.Drawing.Font("Lucida Console", 10)
-	smallfont             = new-object System.Drawing.Font("Calibri", 8)
-	richtextfont          = new-object System.Drawing.Font("Lucida Console", 9)
-}
+
 #Formulario
 $Form1 = New-Object System.Windows.Forms.Form
 $Form1.ClientSize = new-object System.Drawing.Size(900, 575)
