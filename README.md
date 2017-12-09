@@ -15,7 +15,7 @@ This GUI allows you to execute any script to a list of computers. The only thing
 When creating your own powershell scripts just bear in mind that the list of computers will fill the variable $computername and the credentials will be saved in $creds
 Here is an example for restarting a list of computers:
 
-restart-computer -computername $computername -credential $creds -force -confirm:$false
+**restart-computer -computername $computername -credential $creds -force -confirm:$false**
 
 I have uploaded some of my scripts and batches as examples.
 Notice that underscore '_' character in scriptnames is used to create tree levels inside the GUI treeview in order to keep them organized.
