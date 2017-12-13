@@ -163,7 +163,7 @@ $treeSeparator = "_"
 
 #Formulario
 $Form1 = New-Object System.Windows.Forms.Form
-$Form1.ClientSize = new-object System.Drawing.Size(900, 575)
+$Form1.ClientSize = new-object System.Drawing.Size(1100, 500)
 $Form1.text = "SistemasWin | MiShell Deploy | $identity"
 $Form1.Icon = New-Object system.drawing.icon ("$PSScriptRoot\ico\rocket.ico")
 $Form1.backcolor = $css.formcolor
@@ -488,7 +488,8 @@ $buttonps.Add_Click( {
 				write-host "`n$computername : Running $scriptfilebasename..." -fore cyan
 				Append-Richtextbox -ComputerName $computername -Source "ps1command" -Message "Running $scriptfilebasename" -logfile 'ps1command.log'
 				if ($RadioButtonRunas.Checked) {
-					start-process -credential $creds -filepath powershell.exe -argumentlist "-noprofile -file ""$scriptfilefullname"" $computername"
+					if ($scope -ne '') {start-process -credential $creds -filepath powershell.exe -argumentlist "-noprofile -file ""$scriptfilefullname"" $computername"}
+					else {start-process -filepath powershell.exe -argumentlist "-noprofile -file ""$scriptfilefullname"" $computername"}
 					<#
 					$newProcess = new-object System.Diagnostics.ProcessStartInfo "PowerShell"
 					$newProcess.Arguments = "-noprofile -file ""$scriptfilefullname"" $computername"
