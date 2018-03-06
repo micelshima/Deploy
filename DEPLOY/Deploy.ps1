@@ -93,7 +93,7 @@ Function ping-computers($objcomputers) {
 		$percent = [int](($count / $total) * 100)
 		Write-Progress -Activity "PINGING" -CurrentOperation "Pinging $computername" -status "$percent% Completed ($count/$total)" -PercentComplete $percent
 		$count++
-		$resultado = Test-Connection -ComputerName $computername -Count 1 -BufferSize 16 -quiet
+		$resultado = Test-Connection -ComputerName $computername -Count 2 -BufferSize 16 -quiet -erroraction "SilentlyContinue"
 		if ($resultado -eq $true) {
 			$color = "green"
 			$objcomputers2 += $computername
@@ -427,7 +427,7 @@ $buttonpsexec.Add_Click( {
 				if ($scope -ne '') {invoke-expression $cmdkeyadd}
 				invoke-expression $psexeccommand
 				$msg = "{0}: Executing: {1} with params:{2} exitcode:{3}" -f $computername, $scriptfilebasename, $params, $lastexitcode
-				if ($lastexitcode -in (5, 6, 50, 53, 122, 1311, 1326, 2250)) {$color = $css.richtextcolorERR}else {$color = $css.richtextcolorOK}
+				if ($lastexitcode -in (5, 6, 50, 53, 122, 1311, 1326, 1460,2250)) {$color = $css.richtextcolorERR}else {$color = $css.richtextcolorOK}
 				Append-Richtextbox -ComputerName $computername -Source "Psexec" -Message $msg -MessageColor $color -logfile 'psexec.log'
 				if ($scope -ne '') {invoke-expression $cmdkeydelete}
 				write-host $raya -fore cyan
