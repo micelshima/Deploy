@@ -1,6 +1,8 @@
 # Deploy
 Powershell GUI to deploy your own scripts to remote computers.
 
+**This Repository has been archived in favour of D3ploy (Deploy WPF+Runspaces)**
+
 ![alt tag](https://4.bp.blogspot.com/-uknJpXqoqrI/WiGVDLsI9GI/AAAAAAAACAg/Kn6daIOjvagNaU0lXBcCgf59RCxFB5hmQCEwYBhgL/s1600/deployGUIv2.jpg)
 
 STEPS:
